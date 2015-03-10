@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>NetworkSocket.Fast</id>
+    <version>1.2.0.0</version>
+    <title>NetworkSocket.Fast</title>
+    <authors>jiulang</authors>
+    <owners>jiulang</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>这是.net4.0下一个高性能、高可扩展性的Tcp异步通讯组件，内部基于SocketAsyncEventArgs封装，发送和接收完全分离，用户可基于底层的NetworkSocket.dll实现某种协议的高效服务器和客户端，也可以直接使用NetworkSocket.Fast.dll来快速实现自己的通讯服务项目</description>
+  </metadata>
+</package>
