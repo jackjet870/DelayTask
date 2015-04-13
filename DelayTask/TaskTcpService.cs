@@ -1,21 +1,17 @@
-﻿using NetworkSocket;
+﻿using DelayTask.Model;
+using NetworkSocket;
 using NetworkSocket.Fast;
-using NetworkSocket.Fast.Attributes;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using DelayTask.Model;
 
 namespace DelayTask
 {
     /// <summary>
-    /// 网络任务服务
+    /// 任务tcp服务
     /// </summary>
-    public class TaskTcpService : FastTcpServerBase
+    public class TaskTcpService : FastServiceBase
     {
         /// <summary>
         /// 任务调度列表
@@ -23,7 +19,7 @@ namespace DelayTask
         private TaskSheduler taskSheduler = new TaskSheduler();
 
         /// <summary>
-        /// 网络任务服务
+        /// 任务tcp服务
         /// </summary>
         public TaskTcpService()
         {

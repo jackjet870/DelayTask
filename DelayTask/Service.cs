@@ -12,7 +12,7 @@ namespace DelayTask
 {
     public partial class Service : ServiceBase
     {
-        private TaskTcpService service;
+        private TaskTcpServer tcpServer;
 
         public Service()
         {
@@ -21,13 +21,13 @@ namespace DelayTask
 
         protected override void OnStart(string[] args)
         {
-            this.service = new TaskTcpService();
-            this.service.StartListen(12346);
+            this.tcpServer = new TaskTcpServer();
+            this.tcpServer.StartListen();
         }
 
         protected override void OnStop()
         {
-            this.service.Dispose();
+            this.tcpServer.Dispose();
         }
     }
 }

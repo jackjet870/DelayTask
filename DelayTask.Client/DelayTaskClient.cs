@@ -1,7 +1,6 @@
 ﻿using DelayTask.Model;
 using NetworkSocket;
 using NetworkSocket.Fast;
-using NetworkSocket.Fast.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,13 +17,9 @@ namespace DelayTask.Client
     public class DelayTaskClient : FastTcpClientBase
     {
         /// <summary>
-        /// 锁
-        /// </summary>
-        private static readonly object syncRoot = new object();
-        /// <summary>
         /// 实例
         /// </summary>
-        private static DelayTaskClient instance;
+        private static Lazy<DelayTaskClient> instance = new Lazy<DelayTaskClient>(() => new DelayTaskClient());
 
         /// <summary>
         /// 获取唯一实例
@@ -33,42 +28,26 @@ namespace DelayTask.Client
         {
             get
             {
-                lock (syncRoot)
+                if (instance.Value.IsConnected == false)
                 {
-                    if (instance == null || instance.IsDisposed)
-                    {
-                        instance = new DelayTaskClient();
-                    }
-                    if (instance.IsConnected == false)
-                    {
-                        instance.Connect();
-                    }
-                    return instance;
+                    instance.Value.Connect();
                 }
+                return instance.Value;
             }
         }
-
-        /// <summary>
-        /// 连接超时5秒
-        /// </summary>
-        private readonly int connectTimeOut = 5 * 1000;
-
-        /// <summary>
-        /// 获取请求超时30秒
-        /// </summary>
-        public static readonly int TimeOut = 30 * 1000;
 
         /// <summary>
         /// 连接到服务器
         /// </summary>
         /// <returns></returns>
-        public bool Connect()
+        private bool Connect()
         {
-            var ip = IPAddress.Parse(ConfigurationManager.AppSettings["DelayTaskService"]);
-            var connect = this.Connect(ip, 12346);
-            return connect.Wait(this.connectTimeOut) && connect.Result;
+            var ipPort = ConfigurationManager.AppSettings["DelayTask"].Split(':');
+            var ip = IPAddress.Parse(ipPort[0]);
+            var port = int.Parse(ipPort[1]);
+            var connect = this.Connect(ip, port);
+            return connect.Result;
         }
-
 
         /// <summary>
         /// 获取任务的最近错误信息
