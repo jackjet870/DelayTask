@@ -14,7 +14,7 @@ namespace DelayTask.Client
     /// <summary>
     /// 客户端实现
     /// </summary>
-    public class DelayTaskClient : FastTcpClientBase
+    public class DelayTaskClient : FastTcpClient
     {
         /// <summary>
         /// 实例
@@ -53,11 +53,10 @@ namespace DelayTask.Client
         /// 获取任务的最近错误信息
         /// </summary>      
         /// <param name="id">任务id</param>
-        /// <returns></returns>
-        [Service(Implements.Remote, 100)]
+        /// <returns></returns>      
         public Task<string> GetTaskLastError(Guid id)
         {
-            return this.InvokeRemote<string>(100, id);
+            return this.InvokeApi<string>("GetTaskLastError", id);
         }
 
         /// <summary>
@@ -65,11 +64,10 @@ namespace DelayTask.Client
         /// </summary>            
         /// <param name="taskConfig">任务配置</param>      
         /// <param name="connectingString">连接字符串</param>
-        /// <param name="sql">SQL语句</param>
-        [Service(Implements.Remote, 101)]
+        /// <param name="sql">SQL语句</param>       
         public Task<bool> SetSqlTask(TaskBaseConfig taskConfig, string connectingString, string sql)
         {
-            return this.InvokeRemote<bool>(101, taskConfig, connectingString, sql);
+            return this.InvokeApi<bool>("SetSqlTask", taskConfig, connectingString, sql);
         }
 
         /// <summary>
@@ -77,11 +75,10 @@ namespace DelayTask.Client
         /// </summary>            
         /// <param name="taskConfig">任务配置</param>
         /// <param name="url">请求的URL</param>
-        /// <param name="param">请求的参数</param>
-        [Service(Implements.Remote, 102)]
+        /// <param name="param">请求的参数</param>       
         public Task<bool> SetHttpTask(TaskBaseConfig taskConfig, string url, string param)
         {
-            return this.InvokeRemote<bool>(102, taskConfig, url, param);
+            return this.InvokeApi<bool>("SetHttpTask", taskConfig, url, param);
         }
 
         /// <summary>
@@ -107,22 +104,20 @@ namespace DelayTask.Client
         /// 删除任务
         /// </summary>            
         /// <param name="id">任务id</param>
-        /// <returns></returns>
-        [Service(Implements.Remote, 103)]
+        /// <returns></returns>       
         public Task<bool> RemoveTask(Guid id)
         {
-            return this.InvokeRemote<bool>(103, id);
+            return this.InvokeApi<bool>("RemoveTask", id);
         }
 
         /// <summary>
         /// 继续延长任务的执行时间
         /// </summary>            
         /// <param name="id">任务id</param>
-        /// <param name="delaySeconds">延长秒数</param>
-        [Service(Implements.Remote, 104)]
+        /// <param name="delaySeconds">延长秒数</param>       
         public Task<bool> AddTaskDelaySeconds(Guid id, int delaySeconds)
         {
-            return this.InvokeRemote<bool>(104, id, delaySeconds);
+            return this.InvokeApi<bool>("AddTaskDelaySeconds", id, delaySeconds);
         }
 
 
@@ -133,11 +128,10 @@ namespace DelayTask.Client
         /// <param name="pageSize">页面大小</param>
         /// <param name="sourceId">原始任务的id(Empty表示所有sourceId)</param>
         /// <param name="taskType">任务类型(为空则所有类型)</param>
-        /// <returns></returns>
-        [Service(Implements.Remote, 105)]
+        /// <returns></returns>        
         public Task<TaskBasePage> GetFailureTaskPage(int pageIndex, int pageSize, Guid sourceId, string taskType)
         {
-            return this.InvokeRemote<TaskBasePage>(105, pageIndex, pageSize, sourceId, taskType);
+            return this.InvokeApi<TaskBasePage>("GetFailureTaskPage", pageIndex, pageSize, sourceId, taskType);
         }
 
 
@@ -146,11 +140,10 @@ namespace DelayTask.Client
         /// 执行成功则自动从失败列表中移除
         /// </summary>            
         /// <param name="id">任务id</param>
-        /// <returns></returns>
-        [Service(Implements.Remote, 106)]
+        /// <returns></returns>       
         public Task<bool> ExecuteFailureTask(Guid id)
         {
-            return this.InvokeRemote<bool>(106, id);
+            return this.InvokeApi<bool>("ExecuteFailureTask", id);
         }
 
         /// <summary>
@@ -159,11 +152,10 @@ namespace DelayTask.Client
         /// <param name="pageIndex">页面索引</param>
         /// <param name="pageSize">页面大小</param>
         /// <param name="taskType">任务类型(为空则所有类型)</param>
-        /// <returns></returns>
-        [Service(Implements.Remote, 107)]
+        /// <returns></returns>      
         public Task<TaskBasePage> GeTaskPage(int pageIndex, int pageSize, string taskType)
         {
-            return this.InvokeRemote<TaskBasePage>(107, pageIndex, pageSize, taskType);
+            return this.InvokeApi<TaskBasePage>("GeTaskPage", pageIndex, pageSize, taskType);
         }
     }
 }

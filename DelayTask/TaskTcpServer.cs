@@ -15,14 +15,14 @@ namespace DelayTask
     /// <summary>
     /// 网络任务服务
     /// </summary>
-    public class TaskTcpServer : FastTcpServerBase
+    public class TaskTcpServer : FastTcpServer
     {
         /// <summary>
         /// 网络任务服务
         /// </summary>
         public TaskTcpServer()
         {
-            this.BindService<TaskTcpService>();
+            this.BindService<DelayTaskService>();
         }
 
         /// <summary>
