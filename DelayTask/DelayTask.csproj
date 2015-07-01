@@ -48,9 +48,8 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NetworkSocket, Version=1.3.5.0, Culture=neutral, PublicKeyToken=48bdd02a78b31d80, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetworkSocket.Fast.1.3.5\lib\net40\NetworkSocket.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NetworkSocket">
+      <HintPath>..\packages\NetworkSocket.Fast.1.3.8\lib\net40\NetworkSocket.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
