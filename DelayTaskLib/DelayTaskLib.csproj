@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NetworkSocket, Version=1.3.8.0, Culture=neutral, PublicKeyToken=48bdd02a78b31d80, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetworkSocket.Fast.1.3.8\lib\net40\NetworkSocket.dll</HintPath>
+      <HintPath>..\packages\NetworkSocket.1.3.9\lib\net40\NetworkSocket.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
