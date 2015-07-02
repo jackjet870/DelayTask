@@ -66,9 +66,9 @@ namespace DelayTask.Model
         /// <param name="delaySeconds">延时执行的秒数</param>
         /// <param name="taskType">类型标识</param>
         /// <param name="description">描述</param>
-        /// <param name="loopInterval">运行时间间隔</param>
+        /// <param name="loopInterval">运行时间间隔(秒)</param>
         /// <returns></returns>
-        public static TaskBaseConfig GetLoopTaskConfig(Guid id, int delaySeconds, string taskType, string description, int loopInterval)
+        public static TaskBaseConfig NewLoopTaskConfig(Guid id, int delaySeconds, string taskType, string description, int loopInterval)
         {
             return new TaskBaseConfig
             {
@@ -92,7 +92,7 @@ namespace DelayTask.Model
         /// <param name="maxTryTime">失败后最大尝试运行次数</param>
         /// <param name="tryInterval">尝试时间间隔(秒)</param>
         /// <returns></returns>
-        public static TaskBaseConfig GetUnloopTaskConfig(Guid id, int delaySeconds, string taskType, string description, int maxTryTime = 0, int tryInterval = 0)
+        public static TaskBaseConfig NewUnloopTaskConfig(Guid id, int delaySeconds, string taskType, string description, int maxTryTime = 0, int tryInterval = 0)
         {
             return new TaskBaseConfig
             {

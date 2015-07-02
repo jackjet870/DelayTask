@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DelayTask.Sheduler;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using Topshelf;
 
 namespace DelayTask
 {
@@ -13,13 +14,15 @@ namespace DelayTask
         /// 应用程序的主入口点。
         /// </summary>
         static void Main()
-        {            
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-            { 
-                new Service() 
-            };
-            ServiceBase.Run(ServicesToRun);
+        {
+            HostFactory.Run(c =>
+            {
+                c.Service<TaskTcpServer>();
+                c.RunAsNetworkService();
+                c.SetServiceName("DelayTask");
+                c.SetDisplayName("延时任务执行服务");
+                c.SetDescription("提供延时和定时任务执行的服务");
+            });
         }
     }
 }
