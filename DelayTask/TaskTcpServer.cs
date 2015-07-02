@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using DelayTask.Model;
 using System.Configuration;
 using DelayTask.Services;
 using Topshelf;
@@ -57,6 +56,7 @@ namespace DelayTask
         /// <returns></returns>
         public bool Stop(Topshelf.HostControl hostControl)
         {
+            this.Dispose();
             return true;
         }
     }

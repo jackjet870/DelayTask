@@ -1,4 +1,4 @@
-﻿using DelayTask.Model;
+﻿using DelayTask.Models;
 using DelayTask.Sheduler;
 using NetworkSocket;
 using NetworkSocket.Fast;

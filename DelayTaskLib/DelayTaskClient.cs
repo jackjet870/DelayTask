@@ -1,5 +1,4 @@
-﻿using DelayTask.Model;
-using NetworkSocket;
+﻿using NetworkSocket;
 using NetworkSocket.Fast;
 using System;
 using System.Collections.Generic;
@@ -14,64 +13,83 @@ namespace DelayTaskLib
     /// <summary>
     /// 表示延时执行任务客户端
     /// </summary>
-    public class DelayTaskClient : FastTcpClient
+    public class DelayTaskClient
     {
         /// <summary>
-        /// 实例
+        /// 远程端
         /// </summary>
-        private static Lazy<DelayTaskClient> instance = new Lazy<DelayTaskClient>(() => new DelayTaskClient(), true);
+        private IPEndPoint ipEndPoint;
 
         /// <summary>
-        /// 获取唯一实例
+        /// 客户端对象
         /// </summary>
-        public static DelayTaskClient Instance
+        private FastTcpClient client = new FastTcpClient();
+
+        /// <summary>
+        /// 获取自动连接的客户端对象
+        /// </summary>
+        private FastTcpClient Client
         {
             get
             {
-                if (instance.Value.IsConnected == false)
+                if (this.client.IsConnected == false)
                 {
-                    instance.Value.Connect();
+                    this.client.Connect(this.ipEndPoint).Wait();
                 }
-                return instance.Value;
+                return this.client;
             }
         }
 
         /// <summary>
         /// 延时执行任务客户端
         /// </summary>
-        private DelayTaskClient()
+        /// <param name="remoteEndPoint">远程端地址</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public DelayTaskClient(IPEndPoint remoteEndPoint)
         {
+            if (remoteEndPoint == null)
+            {
+                throw new ArgumentNullException();
+            }
+            this.ipEndPoint = remoteEndPoint;
         }
 
         /// <summary>
-        /// 连接到服务器
+        /// 延时执行任务客户端
         /// </summary>
-        /// <returns></returns>
-        private bool Connect()
+        /// <param name="hostOrAddress">ip或域名</param>
+        /// <param name="port">远程端口</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="SocketException"></exception>
+        public DelayTaskClient(string hostOrAddress, int port)
         {
-            var ipEndpoint = ConfigurationManager.AppSettings["DelayTask"].Split(':');
-            return this.Connect(ipEndpoint.First(), int.Parse(ipEndpoint.Last())).Result;
+            this.ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(hostOrAddress).Last(), port);
         }
 
         /// <summary>
         /// 获取任务的最近错误信息
         /// </summary>      
         /// <param name="id">任务id</param>
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>      
         public Task<string> GetTaskLastError(Guid id)
         {
-            return this.InvokeApi<string>("GetTaskLastError", id);
+            return this.Client.InvokeApi<string>("GetTaskLastError", id);
         }
 
         /// <summary>
         /// 添加或设置Sql任务
         /// </summary>            
         /// <param name="taskConfig">任务配置</param>      
-        /// <param name="connectingString">连接字符串</param>
-        /// <param name="sql">SQL语句</param>       
-        public Task<bool> SetSqlTask(TaskBaseConfig taskConfig, string connectingString, string sql)
+        /// <param name="connectingString">连接字符串</param>       
+        /// <param name="sql">SQL语句</param>     
+        /// <exception cref="SocketException"></exception>
+        /// <returns></returns>     
+        public Task<bool> SetSqlTask(DelayTaskConfig taskConfig, string connectingString, string sql)
         {
-            return this.InvokeApi<bool>("SetSqlTask", taskConfig, connectingString, sql);
+            return this.Client.InvokeApi<bool>("SetSqlTask", taskConfig, connectingString, sql);
         }
 
         /// <summary>
@@ -79,10 +97,12 @@ namespace DelayTaskLib
         /// </summary>            
         /// <param name="taskConfig">任务配置</param>
         /// <param name="url">请求的URL</param>
-        /// <param name="param">请求的参数</param>       
-        public Task<bool> SetHttpTask(TaskBaseConfig taskConfig, string url, string param)
+        /// <param name="param">请求的参数</param>  
+        /// <exception cref="SocketException"></exception>
+        /// <returns></returns>     
+        public Task<bool> SetHttpTask(DelayTaskConfig taskConfig, string url, string param)
         {
-            return this.InvokeApi<bool>("SetHttpTask", taskConfig, url, param);
+            return this.Client.InvokeApi<bool>("SetHttpTask", taskConfig, url, param);
         }
 
         /// <summary>
@@ -91,8 +111,9 @@ namespace DelayTaskLib
         /// <param name="taskConfig">任务配置</param>
         /// <param name="url">请求的URL</param>
         /// <param name="param">请求的参数</param>
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>
-        public Task<bool> SetHttpTask(TaskBaseConfig taskConfig, string url, object param)
+        public Task<bool> SetHttpTask(DelayTaskConfig taskConfig, string url, object param)
         {
             var paramterString = string.Empty;
             if (param != null)
@@ -108,20 +129,23 @@ namespace DelayTaskLib
         /// 删除任务
         /// </summary>            
         /// <param name="id">任务id</param>
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>       
         public Task<bool> RemoveTask(Guid id)
         {
-            return this.InvokeApi<bool>("RemoveTask", id);
+            return this.Client.InvokeApi<bool>("RemoveTask", id);
         }
 
         /// <summary>
         /// 继续延长任务的执行时间
         /// </summary>            
         /// <param name="id">任务id</param>
-        /// <param name="delaySeconds">延长秒数</param>       
+        /// <param name="delaySeconds">延长秒数</param>  
+        /// <exception cref="SocketException"></exception>
+        /// <returns></returns>     
         public Task<bool> AddTaskDelaySeconds(Guid id, int delaySeconds)
         {
-            return this.InvokeApi<bool>("AddTaskDelaySeconds", id, delaySeconds);
+            return this.Client.InvokeApi<bool>("AddTaskDelaySeconds", id, delaySeconds);
         }
 
 
@@ -132,10 +156,11 @@ namespace DelayTaskLib
         /// <param name="pageSize">页面大小</param>
         /// <param name="sourceId">原始任务的id(Empty表示所有sourceId)</param>
         /// <param name="taskType">任务类型(为空则所有类型)</param>
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>        
-        public Task<TaskBasePage> GetFailureTaskPage(int pageIndex, int pageSize, Guid sourceId, string taskType)
+        public Task<DelayTaskPage> GetFailureTaskPage(int pageIndex, int pageSize, Guid sourceId, string taskType)
         {
-            return this.InvokeApi<TaskBasePage>("GetFailureTaskPage", pageIndex, pageSize, sourceId, taskType);
+            return this.Client.InvokeApi<DelayTaskPage>("GetFailureTaskPage", pageIndex, pageSize, sourceId, taskType);
         }
 
 
@@ -144,10 +169,11 @@ namespace DelayTaskLib
         /// 执行成功则自动从失败列表中移除
         /// </summary>            
         /// <param name="id">任务id</param>
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>       
         public Task<bool> ExecuteFailureTask(Guid id)
         {
-            return this.InvokeApi<bool>("ExecuteFailureTask", id);
+            return this.Client.InvokeApi<bool>("ExecuteFailureTask", id);
         }
 
         /// <summary>
@@ -156,10 +182,11 @@ namespace DelayTaskLib
         /// <param name="pageIndex">页面索引</param>
         /// <param name="pageSize">页面大小</param>
         /// <param name="taskType">任务类型(为空则所有类型)</param>
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>      
-        public Task<TaskBasePage> GeTaskPage(int pageIndex, int pageSize, string taskType)
+        public Task<DelayTaskPage> GeTaskPage(int pageIndex, int pageSize, string taskType)
         {
-            return this.InvokeApi<TaskBasePage>("GeTaskPage", pageIndex, pageSize, taskType);
+            return this.Client.InvokeApi<DelayTaskPage>("GeTaskPage", pageIndex, pageSize, taskType);
         }
     }
 }

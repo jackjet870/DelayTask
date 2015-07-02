@@ -1,11 +1,11 @@
-﻿using DelayTask.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using EntityFramework.Extensions;
 using EntityFramework.Future;
+using DelayTask.Models;
 
 namespace DelayTask.Persistence
 {

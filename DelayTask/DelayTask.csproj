@@ -70,6 +70,12 @@
   <ItemGroup>
     <Compile Include="Filters\ExceptionFilter.cs" />
     <Compile Include="ITaskPersistence.cs" />
+    <Compile Include="Models\HttpTask.cs" />
+    <Compile Include="LastErrors.cs" />
+    <Compile Include="Models\SqlTask.cs" />
+    <Compile Include="Models\TaskBase.cs" />
+    <Compile Include="Models\TaskBaseConfig.cs" />
+    <Compile Include="Models\TaskBasePage.cs" />
     <Compile Include="Sheduler\TaskTable.cs" />
     <Compile Include="Persistence\DatabaseContext.cs" />
     <Compile Include="Persistence\Migrations\201403240946101_Empty.cs" />
@@ -95,12 +101,6 @@
     <EmbeddedResource Include="Persistence\Migrations\201403240946101_Empty.resx">
       <DependentUpon>201403240946101_Empty.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DelayTask.Model\DelayTask.Model.csproj">
-      <Project>{9329ce40-c882-4e22-925d-4e25c250425c}</Project>
-      <Name>DelayTask.Model</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
