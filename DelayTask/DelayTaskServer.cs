@@ -15,12 +15,12 @@ using DelayTask.Filters;
 namespace DelayTask
 {
     /// <summary>
-    /// 网络任务服务
+    /// DelayTask服务
     /// </summary>
-    public class TaskTcpServer : FastTcpServer, ServiceControl
+    public class DelayTaskServer : FastTcpServer, ServiceControl
     {
         /// <summary>
-        /// 异常处理
+        /// 异常非正常的数据请求会话
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="exception"></param>

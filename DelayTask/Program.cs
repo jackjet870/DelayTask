@@ -17,7 +17,7 @@ namespace DelayTask
         {
             HostFactory.Run(c =>
             {
-                c.Service<TaskTcpServer>();
+                c.Service<DelayTaskServer>();
                 c.RunAsLocalSystem();
                 c.SetServiceName("DelayTask");
                 c.SetDisplayName("延时任务执行服务");

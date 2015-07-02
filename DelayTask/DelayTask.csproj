@@ -87,7 +87,7 @@
     <Compile Include="Sheduler\TaskSheduler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskTcpServer.cs" />
+    <Compile Include="DelayTaskServer.cs" />
     <Compile Include="Services\TaskService.cs" />
     <Compile Include="Sheduler\Where.cs" />
   </ItemGroup>
