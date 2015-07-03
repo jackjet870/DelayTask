@@ -42,7 +42,6 @@ namespace DelayTask
         public bool Start(Topshelf.HostControl hostControl)
         {
             var port = int.Parse(ConfigurationManager.AppSettings["Port"]);
-
             this.BindService<TaskService>();
             this.GlobalFilter.Add(new ExceptionFilter());
             this.StartListen(port);
