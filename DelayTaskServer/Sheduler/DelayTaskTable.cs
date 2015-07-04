@@ -105,12 +105,23 @@ namespace DelayTaskServer.Sheduler
                 return false;
             }
 
-            var exists = this.taskTable.ContainsKey(task.ID);
+            var forUpdate = this.taskTable.ContainsKey(task.ID);
+            this.SetTaskToDb(task, forUpdate);
             this.taskTable.AddOrUpdate(task.ID, task, (k, v) => task);
+            return true;
+        }
 
+        /// <summary>
+        /// 添加或更新任务
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="forUpdate"></param>
+        /// <returns></returns>
+        private bool SetTaskToDb(T task, bool forUpdate)
+        {
             using (var db = new DatabaseContext())
             {
-                if (exists == false)
+                if (forUpdate == false)
                 {
                     db.Set<T>().Add(task);
                 }
@@ -139,21 +150,16 @@ namespace DelayTaskServer.Sheduler
         /// <param name="dbSync">是否同步数据库</param>
         public bool Remove(Guid id, bool dbSync)
         {
+            if (dbSync == true)
+            {
+                using (var db = new DatabaseContext())
+                {
+                    db.Set<T>().Where(item => item.ID == id).Delete();
+                }
+            }
+
             T task;
-            if (this.taskTable.TryRemove(id, out task) == false)
-            {
-                return false;
-            }
-
-            if (dbSync == false)
-            {
-                return true;
-            }
-
-            using (var db = new DatabaseContext())
-            {
-                return db.Set<T>().Where(item => item.ID == id).Delete() > 0;
-            }
+            return this.taskTable.TryRemove(id, out task);
         }
 
         /// <summary>
