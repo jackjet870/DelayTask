@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DelayTaskLib
+namespace DelayTaskServer.Tasks
 {
     /// <summary>
     /// 任务分页信息   
