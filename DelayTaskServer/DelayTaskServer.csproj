@@ -72,21 +72,20 @@
   <ItemGroup>
     <Compile Include="ExceptionFilter.cs" />
     <Compile Include="JavaScriptSerializer.cs" />
+    <Compile Include="Sheduler\DatabaseHelper.cs" />
     <Compile Include="TaskService.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TaskSheduler.cs" />
     <Compile Include="Sheduler\DelayTaskTable.cs" />
     <Compile Include="Sheduler\LoopWorker.cs" />
-    <Compile Include="Sheduler\HttpDelayTaskTable.cs" />
-    <Compile Include="Sheduler\SqlDelayTaskTable.cs" />
-    <Compile Include="Tasks\ExecResult.cs" />
-    <Compile Include="Tasks\FailureHttpTask.cs" />
-    <Compile Include="Tasks\FailureSqlTask.cs" />
+    <Compile Include="Tasks\DelayTaskExecResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Tasks\HttpDelayTask.cs" />
     <Compile Include="Tasks\SqlDelayTask.cs" />
     <Compile Include="Tasks\DelayTask.cs" />
-    <Compile Include="Tasks\DelayTaskPage.cs" />
+    <Compile Include="Tasks\PageInfo.cs" />
     <Compile Include="Sheduler\DatabaseContext.cs" />
     <Compile Include="Sheduler\Migrations\201403240946101_Empty.cs" />
     <Compile Include="Sheduler\Migrations\201403240946101_Empty.Designer.cs">
@@ -95,8 +94,9 @@
     <Compile Include="Sheduler\Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\DelayTaskState.cs" />
     <Compile Include="TcpServer.cs" />
-    <Compile Include="Sheduler\Where.cs" />
+    <Compile Include="Where.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

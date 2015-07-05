@@ -25,26 +25,14 @@ namespace DelayTaskServer.Tasks
         public string SqlCommand { get; set; }
 
         /// <summary>
-        /// 获取失败的任务
-        /// </summary>
-        public virtual List<FailureSqlTask> FailureTasks { get; set; }
-
-        /// <summary>
-        /// Sql任务
-        /// </summary>
-        public SqlDelayTask()
-        {
-            this.FailureTasks = new List<FailureSqlTask>();
-        }
-
-        /// <summary>
         /// 执行任务
         /// </summary>
         /// <returns></returns>
         public override void Execute()
         {
             using (var connet = new SqlConnection(this.ConnectingString))
-            {                connet.Open();
+            {
+                connet.Open();
                 using (var tran = connet.BeginTransaction())
                 {
                     using (var cmd = new SqlCommand(this.SqlCommand, connet, tran))

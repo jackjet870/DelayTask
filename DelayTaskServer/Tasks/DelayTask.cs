@@ -47,10 +47,21 @@ namespace DelayTaskServer.Tasks
         public int LoopInterval { get; set; }
 
         /// <summary>
-        /// 获取或设置是否执行过
+        /// 执行成功次数
+        /// </summary>
+        public int SuccessCount { get; set; }
+
+        /// <summary>
+        /// 执行失败次数
+        /// </summary>
+        public int FailureCount { get; set; }
+
+        /// <summary>
+        /// 获取或设置是否正在执行中
         /// </summary>      
-        [ScriptIgnore]
-        public bool IsExecuted { get; set; }
+        [NotMapped]
+        [ScriptIgnore]        
+        public bool IsExecuting { get; set; }
 
         /// <summary>
         /// 执行任务
@@ -71,19 +82,28 @@ namespace DelayTaskServer.Tasks
         /// 异步执行任务
         /// </summary>
         /// <returns></returns>
-        public Task<ExecResult> ExecuteAsync()
+        public Task<DelayTaskExecResult> ExecuteAsync()
         {
             return Task.Factory.StartNew(() =>
             {
+                var result = new DelayTaskExecResult
+                {
+                    ID = Guid.NewGuid(),
+                    DelayTaskID = this.ID,
+                    ExecutingTime = DateTime.Now
+                };
                 try
                 {
                     this.Execute();
-                    return new ExecResult { State = true };
+                    result.Success = true;
                 }
                 catch (Exception ex)
                 {
-                    return new ExecResult { Message = ex.Message };
+                    result.Success = false;
+                    result.Exception = ex.Message;
                 }
+                result.ExecutedTime = DateTime.Now;
+                return result;
             }, TaskCreationOptions.None);
         }
     }

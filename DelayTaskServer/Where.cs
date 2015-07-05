@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace DelayTaskServer.Sheduler
+namespace DelayTaskServer
 {
     /// <summary>
     /// Where条件扩展

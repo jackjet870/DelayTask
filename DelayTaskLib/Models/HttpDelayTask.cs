@@ -23,11 +23,5 @@ namespace DelayTaskLib
         /// 获取或设置请求的参数
         /// </summary>
         public string Param { get; set; }
-
-        /// <summary>
-        /// 获取失败的任务
-        /// </summary>
-        [ScriptIgnore]
-        public virtual ICollection<FailureHttpTask> FailureTasks { get; set; }
     }
 }

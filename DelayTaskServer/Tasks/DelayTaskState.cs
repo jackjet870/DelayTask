@@ -6,17 +6,21 @@ using System.Text;
 namespace DelayTaskServer.Tasks
 {
     /// <summary>
-    /// 执行结果
+    /// 任务状态
     /// </summary>
-    public class ExecResult
+    public enum DelayTaskState
     {
         /// <summary>
-        /// 状态
+        /// 全部状态
         /// </summary>
-        public bool State { get; set; }
+        ALL,
         /// <summary>
-        /// 异常消息
+        /// 活动的任务
         /// </summary>
-        public string Message { get; set; }
+        Active,
+        /// <summary>
+        /// 不再活动的任务
+        /// </summary>
+        NoActive
     }
 }

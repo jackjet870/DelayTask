@@ -5,10 +5,10 @@ using System.Linq;
 namespace DelayTaskLib
 {
     /// <summary>
-    /// 任务分页信息   
+    /// 表示任务分页信息   
     /// </summary>   
     [Serializable]
-    public class DelayTaskPage<T> where T : DelayTask
+    public class PageInfo<T> 
     {
         /// <summary>
         /// 页面索引

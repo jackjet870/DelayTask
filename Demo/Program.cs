@@ -12,9 +12,8 @@ namespace Demo
         {
             var client = new DelayTaskClient("127.0.0.1", 12306);
             var task = new SqlDelayTask { ID = Guid.NewGuid(), Name = "sql", ExecuteTime = DateTime.Now.AddSeconds(20) };
-            var add = client.SetSqlTask(task).Result;
-            var page = client.SqlTaskToPage(0, 10, null, null, null).Result;
-
+           // var add = client.SetSqlTask(task).Result;
+            var page = client.SqlTaskToPage(0, 10, DelayTaskState.ALL).Result;           
             Console.ReadLine();
         }
     }

@@ -12,9 +12,20 @@ namespace DelayTaskServer
     /// 延时任务服务
     /// </summary>
     public class TaskService : FastApiService
-    { 
+    {
         /// <summary>
-        /// 添加或设置Sql任务
+        /// 获取活动状态SQL任务
+        /// </summary>
+        /// <param name="id">任务id</param>
+        /// <returns></returns>
+        [Api]
+        public SqlDelayTask GetSqlTask(Guid id)
+        {
+            return TaskSheduler.SqlTaskTable.Get(id);
+        }
+
+        /// <summary>
+        /// 添加或设置SQL任务
         /// </summary>       
         /// <param name="task">任务</param>  
         /// <returns></returns>      
@@ -25,7 +36,7 @@ namespace DelayTaskServer
         }
 
         /// <summary>
-        /// 删除任务
+        /// 删除SQL任务
         /// </summary>       
         /// <param name="id">任务id</param>
         /// <returns></returns>        
@@ -36,7 +47,7 @@ namespace DelayTaskServer
         }
 
         /// <summary>
-        /// 继续延长任务的执行时间
+        /// 继续延长SQL任务的执行时间
         /// </summary>      
         /// <param name="id">任务id</param>
         /// <param name="delaySeconds">延长秒数</param>       
@@ -47,24 +58,33 @@ namespace DelayTaskServer
         }
 
         /// <summary>
-        /// 分页操作
+        /// 获取待运行的SQL任务分页
         /// </summary>  
         /// <param name="pageIndex">页面索引</param>
-        /// <param name="pageSize">页面大小</param>
-        /// <param name="isExecuted">是否已执行</param>
+        /// <param name="pageSize">页面大小</param>   
+        /// <param name="state">状态</param>
         /// <param name="name">名称</param>
         /// <param name="description">描述</param>
         /// <returns></returns>
         [Api]
-        public DelayTaskPage<SqlDelayTask> SqlTaskToPage(int pageIndex, int pageSize, bool? isExecuted, string name, string description)
+        public PageInfo<SqlDelayTask> SqlTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string name, string description)
         {
-            return TaskSheduler.SqlTaskTable.ToPage(pageIndex, pageSize, isExecuted, name, description);
+            return TaskSheduler.SqlTaskToPage(pageIndex, pageSize, state, name, description);
         }
 
 
 
 
-
+        /// <summary>
+        /// 获取活动状态Http任务
+        /// </summary>
+        /// <param name="id">任务id</param>
+        /// <returns></returns>
+        [Api]
+        public HttpDelayTask GetHttpTask(Guid id)
+        {
+            return TaskSheduler.HttpTaskTable.Get(id);
+        }
 
         /// <summary>
         /// 添加或设置Http任务
@@ -78,7 +98,7 @@ namespace DelayTaskServer
         }
 
         /// <summary>
-        /// 删除任务
+        /// 删除Http任务
         /// </summary>       
         /// <param name="id">任务id</param>
         /// <returns></returns>        
@@ -89,7 +109,7 @@ namespace DelayTaskServer
         }
 
         /// <summary>
-        /// 继续延长任务的执行时间
+        /// 继续延长Http任务的执行时间
         /// </summary>      
         /// <param name="id">任务id</param>
         /// <param name="delaySeconds">延长秒数</param>       
@@ -100,18 +120,32 @@ namespace DelayTaskServer
         }
 
         /// <summary>
-        /// 分页操作
+        /// 获取待运行的Http任务分页
         /// </summary>  
         /// <param name="pageIndex">页面索引</param>
-        /// <param name="pageSize">页面大小</param>
-        /// <param name="isExecuted">是否已执行</param>
+        /// <param name="pageSize">页面大小</param>   
+        /// <param name="state">状态</param>
         /// <param name="name">名称</param>
         /// <param name="description">描述</param>
         /// <returns></returns>
         [Api]
-        public DelayTaskPage<HttpDelayTask> HttpTaskToPage(int pageIndex, int pageSize, bool? isExecuted, string name, string description)
+        public PageInfo<HttpDelayTask> HttpTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string name, string description)
         {
-            return TaskSheduler.HttpTaskTable.ToPage(pageIndex, pageSize, isExecuted, name, description);
+            return TaskSheduler.HttpTaskToPage(pageIndex, pageSize, state, name, description);
+        }
+
+
+
+        /// <summary>
+        /// 获取任务的执行记录
+        /// </summary>
+        /// <param name="taskId">任务id</param>
+        /// <param name="pageIndex">页面索引</param>
+        /// <param name="pageSize">页面大小</param>
+        [Api]
+        public PageInfo<DelayTaskExecResult> TaskExecResultToPage(Guid taskId, int pageIndex, int pageSize)
+        {
+            return TaskSheduler.TaskExecResultToPage(taskId, pageIndex, pageSize);
         }
     }
 }

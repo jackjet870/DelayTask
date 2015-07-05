@@ -45,15 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\DelayTaskExecResult.cs" />
+    <Compile Include="Models\DelayTaskState.cs" />
     <Compile Include="JavaScriptSerializer.cs" />
-    <Compile Include="DelayTask.cs" />
+    <Compile Include="Models\DelayTask.cs" />
     <Compile Include="DelayTaskClient.cs" />
-    <Compile Include="DelayTaskPage.cs" />
-    <Compile Include="FailureHttpTask.cs" />
-    <Compile Include="FailureSqlTask.cs" />
-    <Compile Include="HttpDelayTask.cs" />
+    <Compile Include="Models\PageInfo.cs" />
+    <Compile Include="Models\HttpDelayTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlDelayTask.cs" />
+    <Compile Include="Models\SqlDelayTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

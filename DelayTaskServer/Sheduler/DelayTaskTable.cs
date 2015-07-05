@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EntityFramework.Extensions;
+
 using System.Threading.Tasks;
 
 namespace DelayTaskServer.Sheduler
@@ -12,7 +12,7 @@ namespace DelayTaskServer.Sheduler
     /// <summary>
     /// 延时任务列表
     /// </summary>
-    public abstract class DelayTaskTable<T> where T : DelayTask, new()
+    public class DelayTaskTable<T> where T : DelayTask, new()
     {
         /// <summary>
         /// 任务字典
@@ -24,13 +24,10 @@ namespace DelayTaskServer.Sheduler
         /// </summary>
         public DelayTaskTable()
         {
-            using (var db = new DatabaseContext())
+            var tasks = DatabaseHelper.LoadTasks<T>();
+            foreach (var task in tasks)
             {
-                var tasks = db.Set<T>().Include("FailureTasks").Where(item => item.IsExecuted == false).ToList();
-                foreach (var task in tasks)
-                {
-                    this.taskTable.TryAdd(task.ID, task);
-                }
+                this.taskTable.TryAdd(task.ID, task);
             }
         }
 
@@ -39,10 +36,10 @@ namespace DelayTaskServer.Sheduler
         /// </summary>
         public void CheckForExcute()
         {
-            var tasks = this.taskTable.Values.Where(item => item.CanExcuteNow() && item.IsExecuted == false);
+            var tasks = this.taskTable.Values.Where(item => item.CanExcuteNow() && item.IsExecuting == false);
             foreach (var task in tasks)
             {
-                task.IsExecuted = true;
+                task.IsExecuting = true;
                 task.ExecuteAsync().ContinueWith(t => this.OnTaskExecuted(task, t.Result));
             }
         }
@@ -52,35 +49,20 @@ namespace DelayTaskServer.Sheduler
         /// </summary>
         /// <param name="task"></param>
         /// <param name="result"></param>
-        private void OnTaskExecuted(T task, ExecResult result)
+        private void OnTaskExecuted(T task, DelayTaskExecResult result)
         {
             if (task.LoopInterval > 0)
             {
                 this.AddDelay(task.ID, task.LoopInterval);
-                task.IsExecuted = false;
+                task.IsExecuting = false;
             }
             else
             {
                 this.Remove(task.ID, false);
-                using (var db = new DatabaseContext())
-                {
-                    db.Set<T>().Where(item => item.ID == task.ID).Update(item => new T { IsExecuted = true });
-                }
             }
 
-            if (result.State == false)
-            {
-                this.OnCreateFailureTask(task, result.Message);
-            }
+            DatabaseHelper.AddExecResult<T>(result);
         }
-
-
-        /// <summary>
-        /// 创建失败的任务执行记录
-        /// </summary>
-        /// <param name="task">任务</param>     
-        /// <param name="reason">失败原因</param>
-        public abstract void OnCreateFailureTask(T task, string reason);
 
         /// <summary>
         /// 获取任务
@@ -106,41 +88,12 @@ namespace DelayTaskServer.Sheduler
             }
 
             var forUpdate = this.taskTable.ContainsKey(task.ID);
-            this.SetTaskToDb(task, forUpdate);
-            this.taskTable.AddOrUpdate(task.ID, task, (k, v) => task);
-            return true;
-        }
-
-        /// <summary>
-        /// 添加或更新任务
-        /// </summary>
-        /// <param name="task"></param>
-        /// <param name="forUpdate"></param>
-        /// <returns></returns>
-        private bool SetTaskToDb(T task, bool forUpdate)
-        {
-            using (var db = new DatabaseContext())
+            var state = DatabaseHelper.SetTask<T>(task, forUpdate);
+            if (state == true)
             {
-                if (forUpdate == false)
-                {
-                    db.Set<T>().Add(task);
-                }
-                else
-                {
-                    var oldTask = db.Set<T>().Find(task.ID);
-                    db.Entry(oldTask).CurrentValues.SetValues(task);
-                }
-
-                try
-                {
-                    db.SaveChanges();
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
+                this.taskTable.AddOrUpdate(task.ID, task, (k, v) => task);
             }
+            return state;
         }
 
         /// <summary>
@@ -152,12 +105,8 @@ namespace DelayTaskServer.Sheduler
         {
             if (dbSync == true)
             {
-                using (var db = new DatabaseContext())
-                {
-                    db.Set<T>().Where(item => item.ID == id).Delete();
-                }
+                DatabaseHelper.RemoveTask<T>(id);
             }
-
             T task;
             return this.taskTable.TryRemove(id, out task);
         }
@@ -176,50 +125,7 @@ namespace DelayTaskServer.Sheduler
             }
 
             task.ExecuteTime = task.ExecuteTime.AddSeconds(seconds);
-            using (var db = new DatabaseContext())
-            {
-                return db.Set<T>().Where(item => item.ID == id).Update(item => new T { ExecuteTime = task.ExecuteTime }) > 0;
-            }
-        }
-
-        /// <summary>
-        /// 获取待运行的任务分页
-        /// </summary>
-        /// <param name="pageIndex">页面索引</param>
-        /// <param name="pageSize">页面大小</param>
-        /// <param name="isExecuted">是否已执行</param>
-        /// <param name="name">名称</param>
-        /// <param name="description">描述</param>
-        /// <returns></returns>
-        public DelayTaskPage<T> ToPage(int pageIndex, int pageSize, bool? isExecuted, string name, string description)
-        {
-            var where = Where.True<T>();
-            if (isExecuted.HasValue)
-            {
-                where = where.And(item => item.IsExecuted == isExecuted);
-            }
-            if (string.IsNullOrEmpty(name) == false)
-            {
-                where = where.And(item => item.Name.Contains(name));
-            }
-            if (string.IsNullOrEmpty(description) == false)
-            {
-                where = where.And(item => item.Description.Contains(description));
-            }
-
-            using (var db = new DatabaseContext())
-            {
-                var totalCount = db.Set<T>().Where(where).Count();
-                var model = db.Set<T>().Include("FailureTasks").Where(where).OrderBy(item => item.ExecuteTime).Skip(pageIndex * pageSize).Take(pageSize).ToList();
-
-                return new DelayTaskPage<T>
-                {
-                    EntityArray = model,
-                    PageIndex = pageIndex,
-                    PageSize = pageSize,
-                    TotalCount = totalCount
-                };
-            }
+            return DatabaseHelper.SetExecuteTime<T>(task.ID, task.ExecuteTime);
         }
     }
 }

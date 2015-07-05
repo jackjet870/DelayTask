@@ -35,13 +35,8 @@ namespace DelayTaskServer.Sheduler
         public DbSet<HttpDelayTask> HttpDelayTask { get; set; }
 
         /// <summary>
-        /// 失败的Http任务
+        /// 延时任务执行结果
         /// </summary>
-        public DbSet<FailureHttpTask> FailureHttpTask { get; set; }
-
-        /// <summary>
-        /// 失败的Sql任务
-        /// </summary>
-        public DbSet<FailureSqlTask> FailureSqlTask { get; set; }
+        public DbSet<DelayTaskExecResult> DelayTaskExecResult { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace DelayTaskServer.Tasks
     /// 任务分页信息   
     /// </summary>   
     [Serializable]
-    public class DelayTaskPage<T> where T : DelayTask
+    public class PageInfo<T>
     {
         /// <summary>
         /// 页面索引

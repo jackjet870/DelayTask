@@ -24,19 +24,6 @@ namespace DelayTaskServer.Tasks
         public string Param { get; set; }
 
         /// <summary>
-        /// 获取失败的任务
-        /// </summary>
-        public virtual List<FailureHttpTask> FailureTasks { get; set; }
-
-        /// <summary>
-        /// Http任务
-        /// </summary>
-        public HttpDelayTask()
-        {
-            this.FailureTasks = new List<FailureHttpTask>();
-        }
-
-        /// <summary>
         /// 执行任务
         /// </summary>
         /// <returns></returns>
