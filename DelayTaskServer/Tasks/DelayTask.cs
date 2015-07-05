@@ -60,7 +60,7 @@ namespace DelayTaskServer.Tasks
         /// 获取或设置是否正在执行中的标记
         /// </summary>      
         [NotMapped]
-        [ScriptIgnore]        
+        [ScriptIgnore]
         public bool IsExecuting { get; set; }
 
         /// <summary>
@@ -90,6 +90,7 @@ namespace DelayTaskServer.Tasks
                 {
                     ID = Guid.NewGuid(),
                     DelayTaskID = this.ID,
+                    DelayTaskType = this.GetType().Name,
                     ExecutingTime = DateTime.Now
                 };
                 try

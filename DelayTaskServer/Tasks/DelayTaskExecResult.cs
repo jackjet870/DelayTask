@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -19,6 +20,12 @@ namespace DelayTaskServer.Tasks
         /// 获取或设置关联的任务ID
         /// </summary>
         public Guid DelayTaskID { get; set; }
+
+        /// <summary>
+        /// 获取或设置任务类型
+        /// </summary>
+        [StringLength(30)]
+        public string DelayTaskType { get; set; }
 
         /// <summary>
         /// 获取任务的开始执行时间        

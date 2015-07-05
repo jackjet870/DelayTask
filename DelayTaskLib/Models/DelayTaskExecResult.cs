@@ -21,6 +21,11 @@ namespace DelayTaskLib
         public Guid DelayTaskID { get; set; }
 
         /// <summary>
+        /// 获取或设置任务类型
+        /// </summary>      
+        public string DelayTaskType { get; set; }
+
+        /// <summary>
         /// 获取任务的开始执行时间        
         /// </summary>       
         public DateTime ExecutingTime { get; set; }
