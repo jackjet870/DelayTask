@@ -21,18 +21,18 @@ namespace DelayTaskLib
         public Guid ID { get; set; }
 
         /// <summary>
-        /// 获取任务执行的时间        
+        /// 获取或设置任务执行的时间        
         /// </summary>       
         public DateTime ExecuteTime { get; set; }
 
         /// <summary>
-        /// 获取或设置任务名称
+        /// 获取或设置任务名称[可空]
         /// 50字符以内
         /// </summary>        
         public string Name { get; set; }
 
         /// <summary>
-        /// 获取或设置任务描述
+        /// 获取或设置任务描述[可空]
         /// 200字符以内
         /// </summary>      
         public string Description { get; set; }
@@ -44,13 +44,15 @@ namespace DelayTaskLib
         public int LoopInterval { get; set; }
 
         /// <summary>
-        /// 执行成功次数
+        /// 获取执行成功次数
         /// </summary>
+        [ScriptIgnore]
         public int SuccessCount { get; set; }
 
         /// <summary>
-        /// 执行失败次数
+        /// 获取执行失败次数
         /// </summary>
+        [ScriptIgnore]
         public int FailureCount { get; set; }
     }
 }

@@ -63,13 +63,13 @@ namespace DelayTaskServer
         /// <param name="pageIndex">页面索引</param>
         /// <param name="pageSize">页面大小</param>   
         /// <param name="state">状态</param>
-        /// <param name="name">名称</param>
-        /// <param name="description">描述</param>
+        /// <param name="keyword">搜索关键字</param>
+        /// <param name="orderBy">排序字符串</param>     
         /// <returns></returns>
         [Api]
-        public PageInfo<SqlDelayTask> SqlTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string name, string description)
+        public PageInfo<SqlDelayTask> SqlTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string keyword, string orderBy)
         {
-            return TaskSheduler.SqlTaskToPage(pageIndex, pageSize, state, name, description);
+            return TaskSheduler.SqlTaskToPage(pageIndex, pageSize, state, keyword, orderBy);
         }
 
 
@@ -125,13 +125,13 @@ namespace DelayTaskServer
         /// <param name="pageIndex">页面索引</param>
         /// <param name="pageSize">页面大小</param>   
         /// <param name="state">状态</param>
-        /// <param name="name">名称</param>
-        /// <param name="description">描述</param>
+        /// <param name="keyword">搜索关键字</param>
+        /// <param name="orderBy">排序字符串</param>     
         /// <returns></returns>
         [Api]
-        public PageInfo<HttpDelayTask> HttpTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string name, string description)
+        public PageInfo<HttpDelayTask> HttpTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string keyword, string orderBy)
         {
-            return TaskSheduler.HttpTaskToPage(pageIndex, pageSize, state, name, description);
+            return TaskSheduler.HttpTaskToPage(pageIndex, pageSize, state, keyword, orderBy);
         }
 
 

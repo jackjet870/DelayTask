@@ -47,17 +47,17 @@ namespace DelayTaskServer.Tasks
         public int LoopInterval { get; set; }
 
         /// <summary>
-        /// 执行成功次数
+        /// 获取或设置执行成功次数
         /// </summary>
         public int SuccessCount { get; set; }
 
         /// <summary>
-        /// 执行失败次数
+        /// 获取或设置执行失败次数
         /// </summary>
         public int FailureCount { get; set; }
 
         /// <summary>
-        /// 获取或设置是否正在执行中
+        /// 获取或设置是否正在执行中的标记
         /// </summary>      
         [NotMapped]
         [ScriptIgnore]        

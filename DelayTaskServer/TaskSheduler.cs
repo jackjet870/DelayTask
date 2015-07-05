@@ -52,15 +52,15 @@ namespace DelayTaskServer
         }
 
         /// <summary>
-        /// 获取待运行的SQL任务分页
+        /// 获取SQL任务分页
         /// </summary>
         /// <param name="pageIndex">页面索引</param>
         /// <param name="pageSize">页面大小</param>    
         /// <param name="state">状态</param>
-        /// <param name="name">名称</param>
-        /// <param name="description">描述</param>
+        /// <param name="keyword">搜索关键字</param>
+        /// <param name="orderBy">排序字符串</param>       
         /// <returns></returns>
-        public static PageInfo<SqlDelayTask> SqlTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string name, string description)
+        public static PageInfo<SqlDelayTask> SqlTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string keyword, string orderBy = "ExecuteTime ASC")
         {
             var where = Where.True<SqlDelayTask>();
 
@@ -73,29 +73,25 @@ namespace DelayTaskServer
                 where = where.And(item => item.LoopInterval <= 0 && (item.SuccessCount + item.FailureCount) > 0);
             }
 
-            if (string.IsNullOrEmpty(name) == false)
+            if (string.IsNullOrEmpty(keyword) == false)
             {
-                where = where.And(item => item.Name.Contains(name));
-            }
-            if (string.IsNullOrEmpty(description) == false)
-            {
-                where = where.And(item => item.Description.Contains(description));
+                where = where.And(item => item.Name.Contains(keyword) || item.Description.Contains(keyword));
             }
 
-            return DatabaseHelper.DelayTaskToPage<SqlDelayTask>(pageIndex, pageSize, where);
+            return DatabaseHelper.DelayTaskToPage<SqlDelayTask>(pageIndex, pageSize, where, orderBy);
         }
 
 
         /// <summary>
-        /// 获取待运行的Http任务分页
+        /// 获取Http任务分页
         /// </summary>
         /// <param name="pageIndex">页面索引</param>
         /// <param name="pageSize">页面大小</param>      
         /// <param name="state">状态</param>
-        /// <param name="name">名称</param>
-        /// <param name="description">描述</param>
+        /// <param name="keyword">搜索关键字</param>
+        /// <param name="orderBy">排序字符串</param>     
         /// <returns></returns>
-        public static PageInfo<HttpDelayTask> HttpTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string name, string description)
+        public static PageInfo<HttpDelayTask> HttpTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string keyword, string orderBy = "ExecuteTime ASC")
         {
             var where = Where.True<HttpDelayTask>();
 
@@ -108,15 +104,11 @@ namespace DelayTaskServer
                 where = where.And(item => item.LoopInterval <= 0 && (item.SuccessCount + item.FailureCount) > 0);
             }
 
-            if (string.IsNullOrEmpty(name) == false)
+            if (string.IsNullOrEmpty(keyword) == false)
             {
-                where = where.And(item => item.Name.Contains(name));
+                where = where.And(item => item.Name.Contains(keyword) || item.Description.Contains(keyword));
             }
-            if (string.IsNullOrEmpty(description) == false)
-            {
-                where = where.And(item => item.Description.Contains(description));
-            }
-            return DatabaseHelper.DelayTaskToPage<HttpDelayTask>(pageIndex, pageSize, where);
+            return DatabaseHelper.DelayTaskToPage<HttpDelayTask>(pageIndex, pageSize, where, orderBy);
         }
     }
 }

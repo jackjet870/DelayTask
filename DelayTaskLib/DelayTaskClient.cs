@@ -28,7 +28,7 @@ namespace DelayTaskLib
         /// <summary>
         /// 获取自动连接的客户端对象
         /// </summary>
-        private FastTcpClient Client
+        private FastTcpClient ConnClient
         {
             get
             {
@@ -75,31 +75,33 @@ namespace DelayTaskLib
         /// 获取活动状态SQL任务
         /// </summary>
         /// <param name="id">任务id</param>
-        /// <returns></returns>
-        [Api]
+        /// <exception cref="SocketException"></exception>
+        /// <returns></returns>     
         public Task<SqlDelayTask> GetSqlTask(Guid id)
         {
-            return this.Client.InvokeApi<SqlDelayTask>("GetSqlTask", id);
+            return this.ConnClient.InvokeApi<SqlDelayTask>("GetSqlTask", id);
         }
 
         /// <summary>
         /// 添加或设置SQL任务
         /// </summary>       
-        /// <param name="task">任务</param>  
+        /// <param name="task">任务</param> 
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns> 
         public Task<bool> SetSqlTask(SqlDelayTask task)
         {
-            return this.Client.InvokeApi<bool>("SetSqlTask", task);
+            return this.ConnClient.InvokeApi<bool>("SetSqlTask", task);
         }
 
         /// <summary>
         /// 删除SQL任务
         /// </summary>       
         /// <param name="id">任务id</param>
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>  
         public Task<bool> RemoveSqlTask(Guid id)
         {
-            return this.Client.InvokeApi<bool>("RemoveSqlTask", id);
+            return this.ConnClient.InvokeApi<bool>("RemoveSqlTask", id);
         }
 
         /// <summary>
@@ -107,9 +109,11 @@ namespace DelayTaskLib
         /// </summary>      
         /// <param name="id">任务id</param>
         /// <param name="delaySeconds">延长秒数</param>  
+        /// <exception cref="SocketException"></exception>
+        /// <returns></returns>
         public Task<bool> AddSqlTaskDelay(Guid id, int delaySeconds)
         {
-            return this.Client.InvokeApi<bool>("AddSqlTaskDelay", id, delaySeconds);
+            return this.ConnClient.InvokeApi<bool>("AddSqlTaskDelay", id, delaySeconds);
         }
 
 
@@ -119,12 +123,13 @@ namespace DelayTaskLib
         /// <param name="pageIndex">页面索引</param>
         /// <param name="pageSize">页面大小</param>  
         /// <param name="state">任务状态</param>
-        /// <param name="name">名称[可选]</param>
-        /// <param name="description">描述[可选]</param>
+        /// <param name="keyword">搜索关键字</param>
+        /// <param name="orderBy">排序字符串</param>     
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>      
-        public Task<PageInfo<SqlDelayTask>> SqlTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string name = null, string description = null)
+        public Task<PageInfo<SqlDelayTask>> SqlTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string keyword = null, string orderBy = "ExecuteTime ASC")
         {
-            return this.Client.InvokeApi<PageInfo<SqlDelayTask>>("SqlTaskToPage", pageIndex, pageSize, state, name, description);
+            return this.ConnClient.InvokeApi<PageInfo<SqlDelayTask>>("SqlTaskToPage", pageIndex, pageSize, state, keyword, orderBy);
         }
 
 
@@ -134,21 +139,22 @@ namespace DelayTaskLib
         /// 获取活动状态Http任务
         /// </summary>
         /// <param name="id">任务id</param>
-        /// <returns></returns>
-        [Api]
+        /// <exception cref="SocketException"></exception>
+        /// <returns></returns>   
         public Task<HttpDelayTask> GetHttpTask(Guid id)
         {
-            return this.Client.InvokeApi<HttpDelayTask>("GetHttpTask", id);
+            return this.ConnClient.InvokeApi<HttpDelayTask>("GetHttpTask", id);
         }
 
         /// <summary>
         /// 添加或设置Http任务
         /// </summary>      
         /// <param name="task">任务</param>  
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>   
         public Task<bool> SetHttpTask(HttpDelayTask task)
         {
-            return this.Client.InvokeApi<bool>("SetHttpTask", task);
+            return this.ConnClient.InvokeApi<bool>("SetHttpTask", task);
         }
 
 
@@ -156,10 +162,11 @@ namespace DelayTaskLib
         /// 删除Http任务
         /// </summary>       
         /// <param name="id">任务id</param>
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>    
         public Task<bool> RemoveHttpTask(Guid id)
         {
-            return this.Client.InvokeApi<bool>("RemoveHttpTask", id);
+            return this.ConnClient.InvokeApi<bool>("RemoveHttpTask", id);
         }
 
         /// <summary>
@@ -167,9 +174,11 @@ namespace DelayTaskLib
         /// </summary>      
         /// <param name="id">任务id</param>
         /// <param name="delaySeconds">延长秒数</param>   
+        /// <exception cref="SocketException"></exception>
+        /// <returns></returns>
         public Task<bool> AddHttpTaskDelay(Guid id, int delaySeconds)
         {
-            return this.Client.InvokeApi<bool>("AddHttpTaskDelay", id, delaySeconds);
+            return this.ConnClient.InvokeApi<bool>("AddHttpTaskDelay", id, delaySeconds);
         }
 
         /// <summary>
@@ -178,12 +187,14 @@ namespace DelayTaskLib
         /// <param name="pageIndex">页面索引</param>
         /// <param name="pageSize">页面大小</param>      
         /// <param name="state">任务状态</param>
-        /// <param name="name">名称[可选]</param>
-        /// <param name="description">描述[可选]</param>
+        /// <param name="keyword">搜索关键字</param>
+        /// <param name="orderBy">排序字符串</param>  
+        /// <exception cref="SocketException"></exception>
+        /// <exception cref="SocketException"></exception>
         /// <returns></returns>       
-        public Task<PageInfo<SqlDelayTask>> HttpTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string name = null, string description = null)
+        public Task<PageInfo<SqlDelayTask>> HttpTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string keyword = null, string orderBy = "ExecuteTime ASC")
         {
-            return this.Client.InvokeApi<PageInfo<SqlDelayTask>>("HttpTaskToPage", pageIndex, pageSize, state, name, description);
+            return this.ConnClient.InvokeApi<PageInfo<SqlDelayTask>>("HttpTaskToPage", pageIndex, pageSize, state, keyword, orderBy);
         }
 
 
@@ -193,10 +204,12 @@ namespace DelayTaskLib
         /// </summary>
         /// <param name="taskId">任务id</param>
         /// <param name="pageIndex">页面索引</param>
-        /// <param name="pageSize">页面大小</param>        
+        /// <param name="pageSize">页面大小</param>    
+        /// <exception cref="SocketException"></exception>
+        /// <returns></returns>
         public Task<PageInfo<DelayTaskExecResult>> TaskExecResultToPage(Guid taskId, int pageIndex, int pageSize)
         {
-            return this.Client.InvokeApi<PageInfo<DelayTaskExecResult>>("TaskExecResultToPage", taskId, pageIndex, pageSize);
+            return this.ConnClient.InvokeApi<PageInfo<DelayTaskExecResult>>("TaskExecResultToPage", taskId, pageIndex, pageSize);
         }
     }
 }

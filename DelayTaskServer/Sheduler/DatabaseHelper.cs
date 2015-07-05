@@ -60,24 +60,25 @@ namespace DelayTaskServer.Sheduler
         {
             using (var db = new DatabaseContext())
             {
-                if (forUpdate == false)
+                using (var tran = db.Database.BeginTransaction())
                 {
-                    db.Set<T>().Add(task);
-                }
-                else
-                {
-                    var oldTask = db.Set<T>().Find(task.ID);
-                    db.Entry(oldTask).CurrentValues.SetValues(task);
-                }
+                    if (forUpdate == true)
+                    {
+                        db.Set<T>().Where(item => item.ID == task.ID).Delete();
+                        db.DelayTaskExecResult.Where(item => item.DelayTaskID == task.ID).Delete();
+                    }
 
-                try
-                {
-                    db.SaveChanges();
-                    return true;
-                }
-                catch
-                {
-                    return false;
+                    try
+                    {
+                        db.Set<T>().Add(task);
+                        db.SaveChanges();
+                        tran.Commit();
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -123,15 +124,16 @@ namespace DelayTaskServer.Sheduler
         /// </summary>
         /// <param name="pageIndex">页面索引</param>
         /// <param name="pageSize">页面大小</param>     
-        /// <param name="where">条件</param>      
+        /// <param name="where">条件</param>    
+        /// <param name="orderBy">排序字符串</param>
         /// <returns></returns>
-        public static PageInfo<T> DelayTaskToPage<T>(int pageIndex, int pageSize, Expression<Func<T, bool>> where) where T : DelayTask
+        public static PageInfo<T> DelayTaskToPage<T>(int pageIndex, int pageSize, Expression<Func<T, bool>> where, string orderBy) where T : DelayTask
         {
             using (var db = new DatabaseContext())
             {
                 var query = db.Set<T>().Where(where);
                 var totalCount = query.Where(where).Count();
-                var model = query.Where(where).OrderBy(item => item.ExecuteTime).Skip(pageIndex * pageSize).Take(pageSize).ToList();
+                var model = query.Where(where).OrderBy(orderBy).Skip(pageIndex * pageSize).Take(pageSize).ToList();
 
                 return new PageInfo<T>
                 {

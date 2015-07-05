@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="ExceptionFilter.cs" />
     <Compile Include="JavaScriptSerializer.cs" />
+    <Compile Include="Extend\OrderByExtend.cs" />
     <Compile Include="Sheduler\DatabaseHelper.cs" />
     <Compile Include="TaskService.cs">
       <SubType>Code</SubType>
@@ -96,7 +97,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\DelayTaskState.cs" />
     <Compile Include="TcpServer.cs" />
-    <Compile Include="Where.cs" />
+    <Compile Include="Extend\WhereExtend.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

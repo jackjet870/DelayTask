@@ -47,8 +47,8 @@ namespace DelayTaskServer.Sheduler
         /// <summary>
         /// 任务执行后
         /// </summary>
-        /// <param name="task"></param>
-        /// <param name="result"></param>
+        /// <param name="task">任务</param>
+        /// <param name="result">结果</param>
         private void OnTaskExecuted(T task, DelayTaskExecResult result)
         {
             if (task.LoopInterval > 0)
@@ -59,6 +59,7 @@ namespace DelayTaskServer.Sheduler
             else
             {
                 this.Remove(task.ID, false);
+                task.IsExecuting = false;
             }
 
             DatabaseHelper.AddExecResult<T>(result);
