@@ -28,7 +28,7 @@ namespace DelayTaskServer.Tasks
         /// 执行任务
         /// </summary>
         /// <returns></returns>
-        public override void Execute()
+        public override async Task<bool> Execute()
         {
             using (var connet = new SqlConnection(this.ConnectingString))
             {
@@ -37,8 +37,9 @@ namespace DelayTaskServer.Tasks
                 {
                     using (var cmd = new SqlCommand(this.SqlCommand, connet, tran))
                     {
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
                         tran.Commit();
+                        return true;
                     }
                 }
             }

@@ -24,6 +24,7 @@ namespace Demo
                 SqlCommand = "DELETE FROM [SqlDelayTask]"
             };
 
+            
             var state = client.SetSqlTask(task).Result;
             Console.WriteLine("设置任务{0}", state ? "成功" : "失败");
             Console.ReadLine();

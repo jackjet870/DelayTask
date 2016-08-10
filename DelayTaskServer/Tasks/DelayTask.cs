@@ -20,7 +20,7 @@ namespace DelayTaskServer.Tasks
     {
         /// <summary>
         /// 获取或设置任务的唯一ID
-        /// </summary>
+        /// </summary>       
         public Guid ID { get; set; }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace DelayTaskServer.Tasks
         /// 执行任务
         /// </summary>
         /// <returns></returns>
-        public abstract void Execute();
+        public abstract Task<bool> Execute();
 
         /// <summary>
         /// 获取是否可以立即运行
@@ -82,30 +82,30 @@ namespace DelayTaskServer.Tasks
         /// 异步执行任务
         /// </summary>
         /// <returns></returns>
-        public Task<DelayTaskExecResult> ExecuteAsync()
+        public async Task<DelayTaskExecResult> ExecuteAsync()
         {
-            return Task.Factory.StartNew(() =>
+            var result = new DelayTaskExecResult
             {
-                var result = new DelayTaskExecResult
-                {
-                    ID = Guid.NewGuid(),
-                    DelayTaskID = this.ID,
-                    DelayTaskType = this.GetType().Name,
-                    ExecutingTime = DateTime.Now
-                };
-                try
-                {
-                    this.Execute();
-                    result.Success = true;
-                }
-                catch (Exception ex)
-                {
-                    result.Success = false;
-                    result.Exception = ex.Message;
-                }
+                ID = Guid.NewGuid(),
+                DelayTaskID = this.ID,
+                DelayTaskType = this.GetType().Name,
+                ExecutingTime = DateTime.Now
+            };
+
+            try
+            {
+                result.Success = await this.Execute();
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Exception = ex.Message;
+            }
+            finally
+            {
                 result.ExecutedTime = DateTime.Now;
-                return result;
-            }, TaskCreationOptions.None);
+            }
+            return result;
         }
     }
 }

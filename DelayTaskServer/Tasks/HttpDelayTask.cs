@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DelayTaskServer.Tasks
 {
@@ -13,6 +15,12 @@ namespace DelayTaskServer.Tasks
     [Serializable]
     public class HttpDelayTask : DelayTask
     {
+        /// <summary>
+        /// http客户端
+        /// </summary>
+        private static readonly HttpClient httpClient = new HttpClient();
+
+
         /// <summary>
         /// 获取或设置请求的URL
         /// </summary>
@@ -27,18 +35,13 @@ namespace DelayTaskServer.Tasks
         /// 执行任务
         /// </summary>
         /// <returns></returns>
-        public override void Execute()
+        public override async Task<bool> Execute()
         {
-            using (var client = new WebClient())
-            {
-                var bytes = new byte[0];
-                if (string.IsNullOrEmpty(this.Param) == false)
-                {
-                    bytes = Encoding.UTF8.GetBytes(this.Param);
-                }
-                client.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                client.UploadData(this.URL, "post", bytes);
-            }
+            var content = this.Param == null ? new byte[0] : Encoding.UTF8.GetBytes(this.Param);
+            var httpContent = new ByteArrayContent(content);
+            httpContent.Headers.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+            var response = await httpClient.PostAsync(this.URL, httpContent);
+            return response.IsSuccessStatusCode;
         }
     }
 }
