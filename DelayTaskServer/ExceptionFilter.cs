@@ -9,15 +9,16 @@ namespace DelayTaskServer
     /// <summary>
     /// 异常处理过滤器
     /// </summary>
-    public class ExceptionFilter : FilterAttribute, IExceptionFilter
+    public class ExceptionFilter : FastFilterAttribute
     {
         /// <summary>
         /// 异常时
         /// </summary>
         /// <param name="filterContext"></param>
-        public void OnException(ExceptionContext filterContext)
+        protected override void OnException(ExceptionContext filterContext)
         {
             filterContext.ExceptionHandled = true;
+            Console.WriteLine(filterContext.Exception);
         }
     }
 }

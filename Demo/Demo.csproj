@@ -32,11 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NetworkSocket, Version=1.4.4.0, Culture=neutral, PublicKeyToken=48bdd02a78b31d80, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetworkSocket.1.4.4\lib\net40\NetworkSocket.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NetworkSocket">
+      <HintPath>..\packages\NetworkSocket.1.6.6\lib\net40\NetworkSocket.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -55,6 +55,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

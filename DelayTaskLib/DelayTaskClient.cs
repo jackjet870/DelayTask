@@ -16,60 +16,27 @@ namespace DelayTaskLib
     public class DelayTaskClient
     {
         /// <summary>
-        /// 远程端
-        /// </summary>
-        private IPEndPoint ipEndPoint;
-
-        /// <summary>
         /// 客户端对象
         /// </summary>
-        private FastTcpClient client = new FastTcpClient();
-
-        /// <summary>
-        /// 获取自动连接的客户端对象
-        /// </summary>
-        private FastTcpClient ConnClient
-        {
-            get
-            {
-                if (this.client.IsConnected == false)
-                {
-                    this.client.Connect(this.ipEndPoint).Wait();
-                }
-                return this.client;
-            }
-        }
+        private readonly FastTcpClient client = new FastTcpClient();
 
         /// <summary>
         /// 延时执行任务客户端
         /// </summary>
         /// <param name="remoteEndPoint">远程端地址</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public DelayTaskClient(IPEndPoint remoteEndPoint)
+        public DelayTaskClient(EndPoint remoteEndPoint)
         {
             if (remoteEndPoint == null)
             {
                 throw new ArgumentNullException();
             }
-            this.ipEndPoint = remoteEndPoint;
+
             this.client.Serializer = new JavaScriptSerializer();
+            this.client.TrySetKeepAlive(TimeSpan.FromMinutes(1));
+            this.client.AutoReconnect = TimeSpan.FromSeconds(5);
+            this.client.Connect(remoteEndPoint);
         }
-
-        /// <summary>
-        /// 延时执行任务客户端
-        /// </summary>
-        /// <param name="hostOrAddress">ip或域名</param>
-        /// <param name="port">远程端口</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="SocketException"></exception>
-        public DelayTaskClient(string hostOrAddress, int port)
-            : this(new IPEndPoint(Dns.GetHostAddresses(hostOrAddress).Last(), port))
-        {
-        }
-
-
 
         /// <summary>
         /// 获取活动状态SQL任务
@@ -79,7 +46,7 @@ namespace DelayTaskLib
         /// <returns></returns>     
         public Task<SqlDelayTask> GetSqlTask(Guid id)
         {
-            return this.ConnClient.InvokeApi<SqlDelayTask>("GetSqlTask", id);
+            return this.client.InvokeApi<SqlDelayTask>("GetSqlTask", id);
         }
 
         /// <summary>
@@ -90,7 +57,7 @@ namespace DelayTaskLib
         /// <returns></returns> 
         public Task<bool> SetSqlTask(SqlDelayTask task)
         {
-            return this.ConnClient.InvokeApi<bool>("SetSqlTask", task);
+            return this.client.InvokeApi<bool>("SetSqlTask", task);
         }
 
         /// <summary>
@@ -101,7 +68,7 @@ namespace DelayTaskLib
         /// <returns></returns>  
         public Task<bool> RemoveSqlTask(Guid id)
         {
-            return this.ConnClient.InvokeApi<bool>("RemoveSqlTask", id);
+            return this.client.InvokeApi<bool>("RemoveSqlTask", id);
         }
 
         /// <summary>
@@ -113,7 +80,7 @@ namespace DelayTaskLib
         /// <returns></returns>
         public Task<bool> AddSqlTaskDelay(Guid id, int delaySeconds)
         {
-            return this.ConnClient.InvokeApi<bool>("AddSqlTaskDelay", id, delaySeconds);
+            return this.client.InvokeApi<bool>("AddSqlTaskDelay", id, delaySeconds);
         }
 
 
@@ -129,7 +96,7 @@ namespace DelayTaskLib
         /// <returns></returns>      
         public Task<PageInfo<SqlDelayTask>> SqlTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string keyword = null, string orderBy = "ExecuteTime ASC")
         {
-            return this.ConnClient.InvokeApi<PageInfo<SqlDelayTask>>("SqlTaskToPage", pageIndex, pageSize, state, keyword, orderBy);
+            return this.client.InvokeApi<PageInfo<SqlDelayTask>>("SqlTaskToPage", pageIndex, pageSize, state, keyword, orderBy);
         }
 
 
@@ -143,7 +110,7 @@ namespace DelayTaskLib
         /// <returns></returns>   
         public Task<HttpDelayTask> GetHttpTask(Guid id)
         {
-            return this.ConnClient.InvokeApi<HttpDelayTask>("GetHttpTask", id);
+            return this.client.InvokeApi<HttpDelayTask>("GetHttpTask", id);
         }
 
         /// <summary>
@@ -154,7 +121,7 @@ namespace DelayTaskLib
         /// <returns></returns>   
         public Task<bool> SetHttpTask(HttpDelayTask task)
         {
-            return this.ConnClient.InvokeApi<bool>("SetHttpTask", task);
+            return this.client.InvokeApi<bool>("SetHttpTask", task);
         }
 
 
@@ -166,7 +133,7 @@ namespace DelayTaskLib
         /// <returns></returns>    
         public Task<bool> RemoveHttpTask(Guid id)
         {
-            return this.ConnClient.InvokeApi<bool>("RemoveHttpTask", id);
+            return this.client.InvokeApi<bool>("RemoveHttpTask", id);
         }
 
         /// <summary>
@@ -178,7 +145,7 @@ namespace DelayTaskLib
         /// <returns></returns>
         public Task<bool> AddHttpTaskDelay(Guid id, int delaySeconds)
         {
-            return this.ConnClient.InvokeApi<bool>("AddHttpTaskDelay", id, delaySeconds);
+            return this.client.InvokeApi<bool>("AddHttpTaskDelay", id, delaySeconds);
         }
 
         /// <summary>
@@ -194,7 +161,7 @@ namespace DelayTaskLib
         /// <returns></returns>       
         public Task<PageInfo<SqlDelayTask>> HttpTaskToPage(int pageIndex, int pageSize, DelayTaskState state, string keyword = null, string orderBy = "ExecuteTime ASC")
         {
-            return this.ConnClient.InvokeApi<PageInfo<SqlDelayTask>>("HttpTaskToPage", pageIndex, pageSize, state, keyword, orderBy);
+            return this.client.InvokeApi<PageInfo<SqlDelayTask>>("HttpTaskToPage", pageIndex, pageSize, state, keyword, orderBy);
         }
 
 
@@ -209,7 +176,7 @@ namespace DelayTaskLib
         /// <returns></returns>
         public Task<PageInfo<DelayTaskExecResult>> TaskExecResultToPage(Guid taskId, int pageIndex, int pageSize)
         {
-            return this.ConnClient.InvokeApi<PageInfo<DelayTaskExecResult>>("TaskExecResultToPage", taskId, pageIndex, pageSize);
+            return this.client.InvokeApi<PageInfo<DelayTaskExecResult>>("TaskExecResultToPage", taskId, pageIndex, pageSize);
         }
     }
 }

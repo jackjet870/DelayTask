@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace Demo
@@ -10,7 +11,7 @@ namespace Demo
     {
         static void Main(string[] args)
         {
-            var client = new DelayTaskClient("127.0.0.1", 12306);
+            var client = new DelayTaskClient(new IPEndPoint(IPAddress.Loopback, 12306));
 
             // 20 秒后删除SqlDelayTask表内的所有数据
             var task = new SqlDelayTask
